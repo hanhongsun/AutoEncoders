@@ -8,6 +8,8 @@
 
 #include <boost/function.hpp>
 #include<math.h>
+#include<vector>
+#include<unordered_map>
 
 namespace back_prop
 {
@@ -43,6 +45,10 @@ inline double BPNode::compute_delta(double error, double out) const
   
 } // anonymous
 
+/**
+ * Class BPNode is the Node for back propagation algorithm 
+ *
+ */
 class BPNode
 {
 public:
@@ -59,33 +65,43 @@ public:
 
   inline double compute_delta(double error, double out) const;
 
+  // run time reset for the back function
+  // this is supposed to be called by a traverse function
+  void back_run_reset();
 
-  // sort out the acyclic graph if necessary
+  // sort out the acyclic graph before hand
+  // call the forward_run_reset() before hand
   virtual void run_forward();
 
   // run get error
   virtual void run_feedback();
+
+  void add_child_simple(BPNode& child);
   
   // forward signal
   // sum of input
-  double x;
+  double x_;
 
   // output signal
-  double out;
+  double out_;
   
   // backward 
   //
-  double delta;
+  double delta_;
 
-  double error;
+  double error_;
 
-  std::vector<BPNode *> children_nodes;
+  std::vector<BPNode *> children_nodes_;
+
+  // forward Weight
+  std::unordered_map<BPNode *, double > W_;
+
+  // bias
+  double b_;
+
+  std::unordered_map<BPNode *, double > b_vec_;
   
-  std::vector<std::vector<double> > W;
-
-  std::vector<double> b;
-  
-  std::vector<BPNode *> parents_nodes;
+  std::vector<BPNode *> parents_nodes_;
 };
 
 
